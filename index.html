@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class = "outmost-container">
+        <div class="header">
+            <div class="book-ack">Book Rack</div>
+        </div>
+        <div class="sidebar" id="sidebar1"></div>
+
+        <div class="book-container"></div>
+
+        <div class="sidebar" id="sidebar2"></div>
+        <div class="footer"></div>
+    </div>
+
+    <dialog class="dialog-any" closedby="any">
+        <div class="right-side-dia">
+            <div class="titleName"></div>
+            <div class="authorName"></div>
+            <div class="pagesNumber"></div>
+            <div class="readStatus"></div>
+        </div>
+        <div class="left-side-dia"></div>
+    </dialog>
+
+    <dialog closedby="closerequest">
+        <button class="view">View</button>
+        <button class="remove">Remove</button>
+    </dialog>
+    
+    <script src="book.js"></script>
+</body>
+</html>
