@@ -1,19 +1,23 @@
 const newBookBtn = document.createElement("button");
 newBookBtn.classList.add("btn");
 newBookBtn.classList.add("newBookBtn");
-newBookBtn.textContent = "Add new book!";
-
+newBookBtn.textContent = "+";
+const promptContainer = document.createElement("form");
+promptContainer.classList.add("promptContainer");
 const outmost_container = document.querySelector(".outmost-container");
 
-outmost_container.appendChild(newBookBtn);
+const promptContainerContainer = document.createElement("div");
+promptContainerContainer.classList.add("promptContainerContainer")
+promptContainerContainer.appendChild(promptContainer);
+
+const theHobbit = new Book("theHobbit", "author", 123, true);
+
+// outmost_container.appendChild(newBookBtn);
 newBookBtn.addEventListener("click", () => {
     promptContainerContainer.classList.add("active");
 });
 
 // Create a buy a book box
-const promptContainer = document.createElement("form");
-promptContainer.classList.add("promptContainer");
-
 const labelTitle = document.createElement("label");
 labelTitle.id = "title";
 labelTitle.textContent = "Title:";
@@ -45,7 +49,7 @@ readRadioDiv.classList.add("readRadioDiv");
 const yesRead = document.createElement("input");
 yesRead.type = "radio"
 yesRead.name = "radio";
-yesRead.value = "read";
+yesRead.value = true;
 yesRead.id = "yesOption"
 
 const labelYes = document.createElement("label");
@@ -55,7 +59,7 @@ labelYes.htmlFor = "yesOption";
 const noRead = document.createElement("input");
 noRead.type = "radio"
 noRead.name = "radio";
-noRead.value = "not yet read";
+noRead.value = false;
 noRead.id = "noOption"
 
 const labelNo = document.createElement("label");
@@ -73,10 +77,6 @@ submitBtn.textContent = "Add";
 
 promptContainer.append(labelTitle, labelAuthor, labelPages, readRadioDiv, submitBtn);
 
-const promptContainerContainer = document.createElement("div");
-promptContainerContainer.classList.add("promptContainerContainer")
-promptContainerContainer.appendChild(promptContainer);
-
 // Function
 // Add books to the library
 function Book(title, author, pages, read) {
@@ -87,7 +87,7 @@ function Book(title, author, pages, read) {
     this.uniqueID = crypto.randomUUID();
 
     this.info = function() {
-        return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read ? "read" : "not read yet"}`;
+        return `${this.title} by ${this.author}, ${this.pages} pages, ${this.read}`;
     };
 };
 
@@ -99,7 +99,6 @@ function addBookToLibrary(bookContent) {
         return;
     } else {
         if (bookContent instanceof Book) {
-            myLibrary.push(bookContent);
             addBookToBookRack(bookContent);
             // alert(bookContent.info());
         } else {
@@ -116,6 +115,8 @@ promptContainer.addEventListener("submit", (e) => {
     const authorName = inputAuthor.value;
     const pagesNumber = inputPages.value;
     const radioChecked = document.querySelector('input[name="radio"]:checked')?.value;
+    const isRead = radioChecked === "true";
+
 
     if (!titleName || !authorName || !pagesNumber || !radioChecked) {
         alert("Invalid!");
@@ -123,8 +124,7 @@ promptContainer.addEventListener("submit", (e) => {
         return;
     }
 
-    const readed = radioChecked === "read";
-    const newBook = new Book(titleName, authorName, pagesNumber, readed);
+    const newBook = new Book(titleName, authorName, pagesNumber, isRead);
     addBookToLibrary(newBook);
 
     promptContainer.reset();
@@ -137,8 +137,6 @@ promptContainerContainer.addEventListener("click", (e) => {
         promptContainerContainer.classList.remove("active");
     }
 });
-
-outmost_container.append(promptContainerContainer);
 
 // Check Dup
 function checkDuplicate(bookContent) {
@@ -156,19 +154,29 @@ const bookContainer = document.querySelector(".book-container");
 let limit = bookContainer.offsetWidth / 150;
 
 // Variables and stuff
-const colors = ['lightblue', 'tomato', 'khaki', 'lightgreen'];
+const colors = ['lightblue', "lightgoldenrodyellow", 'tomato', 'khaki', 'lightgreen', "lightcyan", "honeydew", "azure", "goldenrod"];
 const dialog = document.querySelector("[closedby='any']");
-const dialogCloser = document.querySelector("[closedby='closerequest']");
-const viewBtn = document.querySelector(".view");
-const removeBtn = document.querySelector(".remove");
+const dialogCloser = document.querySelector(".closerDia");
+const cancelBtn = document.querySelector("#cancel");
+const viewBtn = document.querySelector("#view");
+const removeBtn = document.querySelector("#remove");
 let currentContent = null;
+
+cancelBtn.addEventListener("click", () => {
+    if (currentContent !== null) {
+        dialogCloser.close();
+    }
+});
 
 viewBtn.addEventListener('click', () => {
     if (currentContent !== null) {
-        writeAndOpenModal(currentContent);
+        writeAndOpenModal(currentContent, currentContent.uniqueID);
+        dialog.showModal();
         dialogCloser.close();
     };
 });
+
+checkDuplicate
 
 removeBtn.addEventListener('click', () => {
     if (currentContent !== null) {
@@ -189,31 +197,94 @@ function addBookToBookRack(bookContent) {
         alert("No more room!");
     } else {
         const newBookOnShelf = document.createElement("div");
-        newBookOnShelf.textContent = `${bookContent.title}`;
+        newBookOnShelf.classList.add("bookOnShelf");
+        const head = document.createElement("div");
+        head.classList.add("bookHead");
+        const body = document.createElement("div");
+        body.classList.add("bookBody");
+        const foot = document.createElement("div");
+        foot.classList.add("bookFoot");
+        newBookOnShelf.append(head,body,foot);
+        
+        body.textContent = `${bookContent.title}`;
         newBookOnShelf.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        newBookOnShelf.style.height = "85%";
+        newBookOnShelf.style.height = `${Math.floor(Math.random() * 20) + 70}%`;
         newBookOnShelf.id = bookContent.uniqueID;
+        const clone = newBookOnShelf.cloneNode(true);
 
         // Click on book to view their contents
         newBookOnShelf.addEventListener("click", () => {
             currentContent = bookContent;
+            newBookOnShelf.classList.add("background");
+            clone.style.opacity = "1";
+            const computedStyle = window.getComputedStyle(newBookOnShelf);
+            clone.style.width = computedStyle.width;
+            clone.style.height = computedStyle.height;
+            
+            promptMiddle.appendChild(clone);
+            promptMiddle.classList.add("active");
+
             dialogCloser.showModal();
         });
 
+        dialogCloser.addEventListener("close", () => {
+            newBookOnShelf.classList.remove("background");
+            if (promptMiddle.contains(clone)) {
+                promptMiddle.removeChild(clone);
+            }
+            promptMiddle.classList.remove("active");
+        });
+
         bookContainer.appendChild(newBookOnShelf);
+        myLibrary.push(bookContent);
     }
 }
 
-function writeAndOpenModal(bookContent) {
+addBookToBookRack(theHobbit);
+let checkArray = [];    
+function writeAndOpenModal(bookContent, checkID) {
+    if (checkArray.includes(checkID)) {
+        return;
+    } else {
+        checkArray.push(checkID);
+    }
     const titleB = document.querySelector(".titleName");
     const authorB = document.querySelector(".authorName");
     const pagesB = document.querySelector(".pagesNumber");
     const statusB = document.querySelector(".readStatus");
-    titleB.textContent = bookContent.title;
-    authorB.textContent = bookContent.author;
-    pagesB.textContent = bookContent.pages;
-    statusB.textContent = bookContent.read ? "Already read" : "Not read yet";
-    dialog.showModal();
+    titleB.textContent = "Title: " + bookContent.title;
+    authorB.textContent = "Author: " + bookContent.author;
+    pagesB.textContent = "Number of Pages: " + bookContent.pages;
+    if (bookContent.read === true) {
+        statusB.textContent = "Already read";
+        statusB.classList.add("read");
+    } else {
+        statusB.textContent = "Not read yet";
+        statusB.classList.add("notRead");
+    }
+
+    // Change read status
+    statusB.addEventListener("click", () => {
+        for(let i = 0; i < myLibrary.length; i ++) {
+            if (bookContent.uniqueID === myLibrary[i].uniqueID) {
+                if (statusB.classList.contains("read")) {
+                    statusB.classList.remove("read");
+                    statusB.classList.add("notRead");
+                    statusB.textContent = "Not read yet";
+                    myLibrary[i].read = false;
+                    console.log("hello");
+                } else if (statusB.classList.contains("notRead")) {
+                    statusB.classList.remove("notRead");
+                    statusB.classList.add("read");
+                    statusB.textContent = "Already read";
+                    myLibrary[i].read = true;
+                    console.log("hello1");
+                }
+            }
+        }
+    });
+
+    // dialog.showModal();
 };
 
 function removeBookFromLibrary(bookContent) {
@@ -224,3 +295,9 @@ function removeBookFromLibrary(bookContent) {
         }
     }
 }
+
+// Moving book to the middle at focus
+const promptMiddle = document.createElement("div");
+promptMiddle.classList.add("promptMiddle");
+
+outmost_container.append(promptContainerContainer, newBookBtn, promptMiddle);

@@ -1,4 +1,30 @@
+@font-face {
+    font-family: 'shatomiregular';
+    src: url('webfont-kit/shatomi-pkrrg-webfont.woff2') format('woff2'),
+         url('webfont-kit/shatomi-pkrrg-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'cf_fbi_old_reportregular';
+    src: url('webfont-kit/cffbioldreportregular-mjex-webfont.woff2') format('woff2'),
+         url('webfont-kit/cffbioldreportregular-mjex-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'norsebold';
+    src: url('webfont-kit/norse-bold-webfont.woff2') format('woff2'),
+         url('webfont-kit/norse-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 body {
+    font-family: 'norsebold';
     padding: 0;
     margin: 0;
 }
@@ -62,6 +88,9 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, min(150px));
     align-items: end;
+    gap: 1px;
+
+    position: relative;
 }
 
 
@@ -117,9 +146,18 @@ label[id="title"], label[id="author"], label[id="pages"] {
 }
 
 .newBookBtn {
+    font-weight: bold;
     position: absolute;
     right: 90px;
     bottom: 20px;
+
+    transition: transform 0.3s ease;
+}
+
+.newBookBtn:hover {
+
+    cursor: pointer;
+    transform: translateY(-3px);
 }
 
 .submitBtn {
@@ -128,7 +166,148 @@ label[id="title"], label[id="author"], label[id="pages"] {
     border-radius: 20px;
 }
 
+.readStatus.read:hover {
+    cursor: pointer;
+    color: #49db3c;
+}
+
+.readStatus.notRead:hover {
+    cursor: pointer;
+    color: #db3c3c;
+}
+
 /* Dialog && Modal */
-.dialog-any::backdrop {
+.dialog-any:not([open]) {
+    display: none;
+}
+
+.dialog-any {
+    outline: none;
+    border: none;
+    background-image: url(img/open-book.png); /*By gallery.yopriceville*/
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: rgba(0, 0, 0, 0);
+    height: 400px;
+    width: 600px;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.closerDia::backdrop, .dialog-any::backdrop {
     background: rgba(0, 0, 0, 0.5);
+}
+
+.right-side-dia {
+    margin-left: 40px;
+    margin-bottom: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'cf_fbi_old_reportregular';
+
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.left-side-dia {
+    /* outline: auto; */
+    /* margin-top: 2px; */
+    margin-right: 40px;
+    margin-bottom: 50px;
+    font-size: 10px;
+    font-family: 'shatomiregular';
+    padding: 20px;
+}
+
+/* Book Styling */
+.bookOnShelf {
+    outline: 1px solid black;
+    display: grid;
+    grid-template-rows: 1fr 2fr 1fr;
+
+    transition: transform 0.3s ease;
+    opacity: 1;
+}
+
+.bookOnShelf.background {
+    opacity: 0;
+}
+
+.bookOnShelf:hover {
+    cursor: pointer;
+    transform: translateY(-7px);
+}
+
+.bookHead {
+    border-bottom: 20px double #664228 ;
+}
+
+.bookFoot {
+    border-top: 20px double #664228;
+}
+
+.bookBody {
+    font-size: 26px;
+    text-align: center;
+    margin: 60% auto;
+}
+
+/* Book to the middle when it's focus */
+
+.promptMiddle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.promptMiddle.active {
+    display: flex;
+}
+
+/* View/Remove/Cancel Dialog */
+.closerDia {
+    outline: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0);
+}
+
+.btn2 {
+    flex:1;
+    padding: 10px;
+    width: 80px;
+
+    outline: 0;
+    border-radius: 10px;
+}
+
+#view, #cancel, #remove {
+    transition: transform 0.3s ease;
+}
+
+#view:hover, #remove:hover, #cancel:hover {
+    cursor: pointer;
+    transform: translateY(-5px);
+}
+
+#view:hover {
+    background-color: rgba(115, 255, 80, 1);
+}
+
+#remove:hover {
+    background-color: rgba(238, 45, 45, 1);
+}
+
+#cancel:hover {
+    background-color: rgba(163, 163, 163, 1);
 }
